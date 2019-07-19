@@ -1,5 +1,7 @@
 from collections import deque, namedtuple
 import math
+import random
+import time
 
 
 # we'll use infinity as a default distance to nodes.
@@ -225,13 +227,28 @@ if __name__ == "__main__":
         "D1", "D2", "D3", "D4", "D5",
         "E1", "E2", "E3",
         "F1", "F2",
-        "G1"]  
+        "G1"]
+    park_terisi = int(input("Slot parkiran terisi: "))
+    mobil_masuk = int(input("Mobil yang akan masuk: "))
+
+    print("Untuk Dijkstra: ")
+
+    park_random_terisi = []
+    for i in range(0, park_terisi):
+    	total_parkir = len(node_available)
+    	park_temp = random.randint(0, total_parkir-1)
+    	park_random_terisi.append(node_available[park_temp])
+    	del node_available[park_temp]
+
+    print("List parkir yang sudah terisi: ",park_random_terisi)
 
     list_park_dijkstra = []
-    while (len(node_available)>0):
+    for i in range(0, mobil_masuk):
         results = []
         for node in node_available:
+        	start_time = time.time()
             cost = graph_dijkstra.dijkstra("S", node)
+            end_time = time.time()
             results.append([node, cost])
         cost_min = inf
         node_min = "S"
@@ -239,9 +256,9 @@ if __name__ == "__main__":
             if (result[1]<cost_min):
                 cost_min = result[1]
                 node_min = result[0]
-        list_park_dijkstra.append([node_min, cost_min])
+        list_park_dijkstra.append([node_min, round(cost_min,2)])
         node_available.remove(node_min)
-    print(list_park_dijkstra)
+    print("Urutan parkir mobil: ",list_park_dijkstra)
 
     # Untuk astar
 
@@ -294,19 +311,36 @@ if __name__ == "__main__":
         "F1", "F2",
         "G1"]
 
+    print("Untuk A Star: ")
+    # park_terisi = int(input("Slot parkiran terisi: "))
+    # mobil_masuk = int(input("Mobil yang akan masuk: "))
+    
+    # park_random_terisi = []
+    for i in park_random_terisi:
+    	# total_parkir = len(node_available)
+    	# park_temp = random.randint(0, total_parkir-1)
+    	# park_random_terisi.append(node_available[park_temp])
+    	node_available.remove(i)
+
+    # print("List parkir yang sudah terisi: ",park_random_terisi)
+    
     list_park_astar = []
-    while (len(node_available)>0):
+    for i in range(0, mobil_masuk):
         results = []
         for node in node_available:
-            cost = graph_astar.astar("S", node)
-            results.append([node, cost])
+        	start_time = time.time()
+        	cost = graph_astar.astar("S", node)
+        	end_time = time.time()
+            results.append([node, cost, end_time - start_time])
         cost_min = inf
         node_min = "S"
         for result in results:
             if (result[1]<cost_min):
                 cost_min = result[1]
                 node_min = result[0]
-        list_park_astar.append([node_min, cost_min])
+        list_park_astar.append([node_min, round(cost_min,2)])
         node_available.remove(node_min)
 
-    print(list_park_astar)
+    print("Urutan parkir mobil: ",list_park_astar)
+
+   
